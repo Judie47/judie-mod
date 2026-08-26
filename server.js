@@ -88,7 +88,7 @@ app.post('/api/convert', async (req, res) => {
             tasks[taskId].message = lang === 'de' ? 'Lade Mod herunter...' : 'Downloading mod...';
             tasks[taskId].progress = 10;
             
-            const browser = await puppeteer.launch({ 
+            const launchOptions = {
                 headless: 'new',
                 args: [
                     '--no-sandbox', 
@@ -97,7 +97,11 @@ app.post('/api/convert', async (req, res) => {
                     '--disable-blink-features=AutomationControlled',
                     '--window-size=1920,1080'
                 ]
-            });
+            };
+            if (process.env.PUPPETEER_EXECUTABLE_PATH) {
+                launchOptions.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
+            }
+            const browser = await puppeteer.launch(launchOptions);
             
             try {
                 const page = await browser.newPage();

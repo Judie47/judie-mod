@@ -1,8 +1,9 @@
 FROM node:20-slim
 
-# Install Chrome dependencies for Puppeteer
+# Install Chrome dependencies for Puppeteer & wine for rpf-cli.exe
 RUN apt-get update && apt-get install -y \
     chromium \
+    wine \
     fonts-liberation \
     libappindicator3-1 \
     libasound2 \

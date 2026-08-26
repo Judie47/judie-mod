@@ -38,7 +38,11 @@ function extractAllRpf(dir, outputBase) {
             const rpfOut = path.join(outputBase, path.basename(item, '.rpf') + '_rpf_extracted');
             fs.ensureDirSync(rpfOut);
             try {
-                execSync(`"${RPF_CLI}" extract "${itemPath}" -o "${rpfOut}"`, { stdio: 'pipe' });
+                const isWin = process.platform === 'win32';
+                const cmd = isWin 
+                    ? `"${RPF_CLI}" extract "${itemPath}" -o "${rpfOut}"`
+                    : `wine "${RPF_CLI}" extract "${itemPath}" -o "${rpfOut}"`;
+                execSync(cmd, { stdio: 'pipe' });
                 console.log(`  [RPF] Extracted: ${item}`);
                 // Recursively extract nested rpf files
                 extractAllRpf(rpfOut, outputBase);
