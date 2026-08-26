@@ -1,573 +1,97 @@
-<!DOCTYPE html>
-<html lang="de">
+<!DOCTYPE HTML>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discord Webhook Spammer</title>
-    <!-- Google Fonts -->
+    <title>Judie Mod Converter | GTA V Mods to FiveM Resources Online Tool</title>
+    
+    <meta property="og:title" content="Judie Mod Converter">
+    <meta property="og:description" content="Online tool to convert GTA V mods to FiveM resources automatically.">
+    
+    <!-- Google Fonts & Reliable CDNs -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
-    <!-- FontAwesome Font Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #090314;
-            /* Animated Galaxy Background */
-            background-image: 
-                radial-gradient(circle at 15% 20%, rgba(138, 43, 226, 0.45) 0%, transparent 45%),
-                radial-gradient(circle at 85% 80%, rgba(75, 0, 130, 0.5) 0%, transparent 50%),
-                radial-gradient(circle at 50% 50%, rgba(186, 85, 211, 0.25) 0%, transparent 60%),
-                radial-gradient(circle at 80% 20%, rgba(0, 191, 255, 0.2) 0%, transparent 40%);
-            background-attachment: fixed;
-            position: relative;
-            overflow-x: hidden;
-            padding: 20px;
-        }
-
-        /* Star particle effect overlay */
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-image: 
-                radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)),
-                radial-gradient(2px 2px at 40px 70px, #e0b0ff, rgba(0,0,0,0)),
-                radial-gradient(1px 1px at 90px 40px, #fff, rgba(0,0,0,0)),
-                radial-gradient(2px 2px at 160px 120px, #d8bfd8, rgba(0,0,0,0)),
-                radial-gradient(1.5px 1.5px at 230px 190px, #fff, rgba(0,0,0,0)),
-                radial-gradient(2px 2px at 310px 80px, #8a2be2, rgba(0,0,0,0)),
-                radial-gradient(1px 1px at 370px 150px, #fff, rgba(0,0,0,0)),
-                radial-gradient(2.5px 2.5px at 450px 220px, #00bfff, rgba(0,0,0,0)),
-                radial-gradient(2px 2px at 520px 60px, #fff, rgba(0,0,0,0));
-            background-repeat: repeat;
-            background-size: 600px 600px;
-            opacity: 0.7;
-            pointer-events: none;
-            animation: starsAnimation 100s linear infinite;
-        }
-
-        @keyframes starsAnimation {
-            from { background-position: 0 0; }
-            to { background-position: 1000px 1000px; }
-        }
-
-        /* Glassmorphic Container Card */
-        .card {
-            position: relative;
-            width: 100%;
-            max-width: 480px;
-            background: rgba(180, 160, 235, 0.45);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 24px;
-            padding: 35px 30px 40px 30px;
-            box-shadow: 
-                0 20px 50px rgba(0, 0, 0, 0.4),
-                inset 0 1px 2px rgba(255, 255, 255, 0.4);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            z-index: 10;
-        }
-
-        .card-title {
-            font-size: 1.65rem;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 20px;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-            letter-spacing: 0.3px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .form-group {
-            width: 100%;
-            margin-bottom: 14px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .input-box {
-            width: 100%;
-            background: #ffffff;
-            border: 2px solid #a4a4a4;
-            border-radius: 8px;
-            padding: 12px 16px;
-            font-size: 0.95rem;
-            color: #222;
-            font-family: 'Fira Code', monospace, sans-serif;
-            outline: none;
-            transition: all 0.2s ease;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
-
-        .input-box:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
-        }
-
-        textarea.input-box {
-            height: 120px;
-            resize: vertical;
-            font-family: 'Fira Code', monospace;
-            line-height: 1.5;
-        }
-
-        /* Status Badge */
-        .status-badge {
-            margin-top: 8px;
-            margin-bottom: 12px;
-            padding: 6px 20px;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: #ffffff;
-            display: inline-block;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            min-width: 90px;
-            text-align: center;
-        }
-
-        .status-valid {
-            background-color: #28a745;
-            box-shadow: 0 0 15px rgba(40, 167, 69, 0.4);
-        }
-
-        .status-invalid {
-            background-color: #dc3545;
-            box-shadow: 0 0 15px rgba(220, 53, 69, 0.4);
-        }
-
-        .status-checking {
-            background-color: #ffc107;
-            color: #111;
-            box-shadow: 0 0 15px rgba(255, 193, 7, 0.4);
-        }
-
-        .status-hidden {
-            display: none;
-        }
-
-        /* Spam Controls Box */
-        .spam-settings {
-            width: 100%;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 12px;
-            padding: 14px 16px;
-            margin-bottom: 14px;
-            display: flex;
-            gap: 15px;
-            justify-content: space-between;
-        }
-
-        .spam-field {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .spam-field label {
-            color: #ffffff;
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .spam-field input {
-            width: 100%;
-            background: #ffffff;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            padding: 8px 10px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #222;
-        }
-
-        /* Progress Bar Area */
-        .progress-box {
-            width: 100%;
-            margin-top: 5px;
-            margin-bottom: 10px;
-            display: none;
-        }
-
-        .progress-bar-bg {
-            width: 100%;
-            height: 12px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 6px;
-            overflow: hidden;
-        }
-
-        .progress-bar-fill {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, #28a745, #00ff75);
-            transition: width 0.1s linear;
-        }
-
-        .progress-text {
-            color: #ffffff;
-            font-size: 0.82rem;
-            font-weight: 600;
-            text-align: center;
-            margin-top: 4px;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
-        }
-
-        /* Action Buttons */
-        .button-group {
-            display: flex;
-            gap: 12px;
-            width: 100%;
-            justify-content: center;
-            margin-top: 6px;
-        }
-
-        .btn-send {
-            flex: 1;
-            background: linear-gradient(180deg, #1d72f3 0%, #0855c4 100%);
-            color: #ffffff;
-            font-weight: 600;
-            font-size: 1.05rem;
-            padding: 11px 0;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(8, 85, 196, 0.4);
-            transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease;
-            outline: none;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-send:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(8, 85, 196, 0.6);
-            background: linear-gradient(180deg, #2b7cf5 0%, #095edb 100%);
-        }
-
-        .btn-send:active {
-            transform: translateY(1px);
-        }
-
-        .btn-stop {
-            background: linear-gradient(180deg, #e53935 0%, #c62828 100%) !important;
-            box-shadow: 0 4px 15px rgba(198, 40, 40, 0.4) !important;
-        }
-
-        /* Custom options menu (optional username & avatar) */
-        .extra-options {
-            width: 100%;
-            margin-top: 14px;
-            background: rgba(0, 0, 0, 0.15);
-            border-radius: 10px;
-            padding: 12px 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .extra-options label {
-            color: #fff;
-            font-size: 0.8rem;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .mini-input {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            padding: 6px 10px;
-            font-size: 0.85rem;
-            color: #333;
-        }
-    </style>
+    <link href="public/style.css?v=3" rel="stylesheet">
 </head>
 <body>
+    <div class="drag-zone"></div>
 
-    <div class="card">
-        <h1 class="card-title">
-            <i class="fab fa-discord" style="color: #7289da;"></i> Discord Webhook
-        </h1>
-
-        <!-- Webhook URL Input -->
-        <div class="form-group">
-            <input 
-                type="url" 
-                id="webhookUrl" 
-                class="input-box" 
-                placeholder="https://discord.com/api/webhooks/..." 
-                autocomplete="off"
-                spellcheck="false"
-            />
-            
-            <!-- Status Badge -->
-            <div id="statusBadge" class="status-badge status-hidden">Valid!</div>
+    <div class="container main-container">
+        <div class="header mt-4">
+            <h1><i class="fas fa-car-side me-2"></i>Judie Mod Converter</h1>
+            <p class="lead">Convert GTA 5 Mods (Add-On / Replace) into <span class="badge-fivem">FiveM Ready</span> resources in 1-click</p>
         </div>
 
-        <!-- Message Input -->
-        <div class="form-group">
-            <textarea 
-                id="messageContent" 
-                class="input-box" 
-                placeholder="Nachricht eingeben..."
-                spellcheck="false"
-            ></textarea>
-        </div>
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-link"></i></span>
+                    <input type="text" class="form-control" id="url" placeholder="Paste a GTA5-Mods link or upload a file...">
+                    
+                    <input type="file" class="d-none" id="file" onchange="uploadFile(this)">
+                    
+                    <button class="btn btn-outline-secondary upload-btn" type="button" onclick="$('#file').click()">
+                        <i class="fas fa-file-arrow-up me-1"></i> Upload File
+                    </button>
+                    
+                    <button class="btn btn-primary convert-btn" type="button" onclick="query()">
+                        <i class="fas fa-bolt me-1"></i> Convert Now
+                    </button>
+                </div>
 
-        <!-- Spam Configuration Settings -->
-        <div class="spam-settings">
-            <div class="spam-field">
-                <label for="msgCount"><i class="fas fa-hashtag"></i> Anzahl:</label>
-                <input type="number" id="msgCount" value="10" min="1" max="1000">
-            </div>
-            <div class="spam-field">
-                <label for="msgDelay"><i class="fas fa-stopwatch"></i> Verzögerung (ms):</label>
-                <input type="number" id="msgDelay" value="100" min="0" step="50">
+                <div class="progress mt-3">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">0%</div>
+                </div>
             </div>
         </div>
 
-        <!-- Progress Box -->
-        <div id="progressBox" class="progress-box">
-            <div class="progress-bar-bg">
-                <div id="progressBarFill" class="progress-bar-fill"></div>
+        <div class="row">
+            <div class="col-md-5">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-sparkles"></i> How it works</h5>
+                        <p class="card-text">Welcome to the Judie Online Mod Converter!</p>
+                        <p class="card-text">
+                            <strong>1.</strong> Paste a link from <strong>gta5-mods.com</strong> or upload a <code>.zip</code>, <code>.rar</code>, or <code>.7z</code> archive.<br>
+                            <strong>2.</strong> The converter extracts <code>.rpf</code> files, gathers <code>.yft</code>, <code>.ytd</code> models and metadata.<br>
+                            <strong>3.</strong> Auto-generates <code>fxmanifest.lua</code> and packages everything as a ready-to-use FiveM resource.
+                        </p>
+                        <p class="card-text" style="font-size: 0.9rem; color: #94a3b8; margin-top: 15px;">
+                            <i class="fas fa-clock me-1"></i> Converted mods are saved for 10 minutes.
+                        </p>
+                    </div>
+                </div>
             </div>
-            <div id="progressText" class="progress-text">Gesendet: 0 / 10</div>
+
+            <div class="col-md-7">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-terminal"></i> Conversion Logs</h5>
+                        <div class="log-container">Ready. Waiting for input...</div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- Extra Settings (Optional Username & Avatar) -->
-        <div class="extra-options">
-            <label><i class="fas fa-user-circle"></i> Eigener Bot-Name (optional):</label>
-            <input type="text" id="customUsername" class="mini-input" placeholder="z. B. Webhook Bot">
-            
-            <label><i class="fas fa-image"></i> Avatar Bild URL (optional):</label>
-            <input type="url" id="customAvatar" class="mini-input" placeholder="https://beispiel.de/bild.png">
-        </div>
+        <footer>
+            <!-- Language Switcher Bar -->
+            <div class="lang-switcher-bar">
+                <a href="index_de.html" class="lang-btn"><i class="fas fa-globe"></i> Deutsch 🇩🇪</a>
+                <a href="index.html" class="lang-btn active"><i class="fas fa-globe"></i> English 🇬🇧</a>
+            </div>
 
-        <!-- Action Buttons -->
-        <div class="button-group">
-            <button id="sendBtn" class="btn-send">
-                <i class="fas fa-paper-plane"></i> <span id="btnText">Send</span>
-            </button>
-        </div>
-
-        <!-- Footer Credit -->
-        <div style="margin-top: 20px; font-size: 0.85rem; color: rgba(255,255,255,0.7); font-weight: 500; text-align: center;">
-            By Judie
-        </div>
+            <p style="margin-top: 15px;">&copy; 2026 JUDIE MOD CONVERTER — All rights reserved</p>
+        </footer>
     </div>
 
-    <!-- SweetAlert2 for notifications -->
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <script>
-        const webhookUrlInput = document.getElementById('webhookUrl');
-        const messageInput = document.getElementById('messageContent');
-        const customUsernameInput = document.getElementById('customUsername');
-        const customAvatarInput = document.getElementById('customAvatar');
-        const statusBadge = document.getElementById('statusBadge');
-        const sendBtn = document.getElementById('sendBtn');
-        const btnText = document.getElementById('btnText');
-        
-        const msgCountInput = document.getElementById('msgCount');
-        const msgDelayInput = document.getElementById('msgDelay');
-        const progressBox = document.getElementById('progressBox');
-        const progressBarFill = document.getElementById('progressBarFill');
-        const progressText = document.getElementById('progressText');
-
-        let checkTimeout = null;
-        let isSpamming = false;
-        let stopRequested = false;
-
-        // Auto-validate Webhook URL as user types
-        webhookUrlInput.addEventListener('input', () => {
-            clearTimeout(checkTimeout);
-            const url = webhookUrlInput.value.trim();
-
-            if (!url) {
-                statusBadge.className = 'status-badge status-hidden';
-                return;
-            }
-
-            if (!url.startsWith('https://discord.com/api/webhooks/') && !url.startsWith('https://canary.discord.com/api/webhooks/')) {
-                showStatus('Invalid!', 'invalid');
-                return;
-            }
-
-            showStatus('Checking...', 'checking');
-
-            checkTimeout = setTimeout(() => {
-                validateWebhook(url);
-            }, 500);
-        });
-
-        async function validateWebhook(url) {
-            try {
-                const response = await fetch(url);
-                if (response.ok) {
-                    showStatus('Valid!', 'valid');
-                } else {
-                    showStatus('Invalid!', 'invalid');
-                }
-            } catch (err) {
-                showStatus('Invalid!', 'invalid');
-            }
-        }
-
-        function showStatus(text, type) {
-            statusBadge.innerText = text;
-            statusBadge.className = `status-badge status-${type}`;
-        }
-
-        // Send & Spam Handler
-        sendBtn.addEventListener('click', async () => {
-            if (isSpamming) {
-                stopRequested = true;
-                return;
-            }
-
-            const url = webhookUrlInput.value.trim();
-            const content = messageInput.value.trim();
-            const count = parseInt(msgCountInput.value) || 1;
-            const delay = parseInt(msgDelayInput.value) || 0;
-            const username = customUsernameInput.value.trim();
-            const avatar_url = customAvatarInput.value.trim();
-
-            if (!url) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Webhook fehlt',
-                    text: 'Bitte gib eine gültige Discord Webhook URL ein!',
-                    confirmColor: '#0855c4'
-                });
-                return;
-            }
-
-            if (!content) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Nachricht leer',
-                    text: 'Bitte gib eine Nachricht ein, die gesendet werden soll!',
-                    confirmColor: '#0855c4'
-                });
-                return;
-            }
-
-            // Start sending loop
-            isSpamming = true;
-            stopRequested = false;
-
-            sendBtn.classList.add('btn-stop');
-            btnText.innerText = 'Stoppen';
-
-            progressBox.style.display = 'block';
-            progressBarFill.style.width = '0%';
-            progressText.innerText = `Gesendet: 0 / ${count}`;
-
-            const payload = { content: content };
-            if (username) payload.username = username;
-            if (avatar_url) payload.avatar_url = avatar_url;
-
-            let successCount = 0;
-            let errorCount = 0;
-
-            for (let i = 1; i <= count; i++) {
-                if (stopRequested) break;
-
-                try {
-                    const response = await fetch(url, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-
-                    if (response.ok || response.status === 204) {
-                        successCount++;
-                    } else if (response.status === 429) {
-                        // Rate limit handling
-                        const resData = await response.json().catch(() => ({}));
-                        const retryAfter = (resData.retry_after || 1) * 1000;
-                        progressText.innerText = `Rate Limit! Warte ${(retryAfter/1000).toFixed(1)}s... (${i}/${count})`;
-                        await new Promise(r => setTimeout(r, retryAfter));
-                        i--; // retry current index
-                        continue;
-                    } else {
-                        errorCount++;
-                    }
-                } catch (err) {
-                    errorCount++;
-                }
-
-                // Update UI progress
-                const percent = (i / count) * 100;
-                progressBarFill.style.width = `${percent}%`;
-                progressText.innerText = `Gesendet: ${i} / ${count} ${errorCount > 0 ? `(${errorCount} Fehler)` : ''}`;
-
-                // Delay between requests
-                if (delay > 0 && i < count && !stopRequested) {
-                    await new Promise(r => setTimeout(r, delay));
-                }
-            }
-
-            // Reset UI State
-            isSpamming = false;
-            sendBtn.classList.remove('btn-stop');
-            btnText.innerText = 'Send';
-
-            if (stopRequested) {
-                Swal.fire({
-                    icon: 'info',
-                    title: 'Gestoppt',
-                    text: `Der Vorgang wurde nach ${successCount} Nachrichten gestoppt.`,
-                    confirmColor: '#0855c4'
-                });
-            } else if (successCount > 0) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Erfolgreich beendet!',
-                    text: `${successCount} Nachrichten wurden erfolgreich an Discord gesendet!`,
-                    timer: 2500,
-                    showConfirmButton: false
-                });
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Fehler',
-                    text: 'Keine Nachrichten konnten gesendet werden. Prüfe die Webhook URL.',
-                    confirmColor: '#0855c4'
-                });
-            }
-        });
-    </script>
+    <script src="public/app.js?v=3"></script>
 </body>
 </html>
